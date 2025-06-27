@@ -7,9 +7,9 @@ return {
          name = 'wsl.ssh',
          remote_address = 'localhost',
          multiplexing = 'None',
-         default_prog = { 'zsh', '-l' },
-         assume_shell = 'Posix',
-      },
+         default_prog = { 'fish', '-l' },
+         assume_shell = 'Posix'
+      }
    },
 
    -- ref: https://wezfurlong.org/wezterm/multiplexing.html#unix-domains
@@ -18,11 +18,11 @@ return {
    -- ref: https://wezfurlong.org/wezterm/config/lua/WslDomain.html
    wsl_domains = {
       {
-         name = 'WSL:Ubuntu',
-         distribution = 'Ubuntu',
-         username = 'kevin',
-         default_cwd = '/home/kevin',
-         default_prog = { 'fish', '-l' },
+         name = 'WSL:Ubuntu-24.04',
+         distribution = 'Ubuntu-24.04',
+         username = 'renatus',
+         default_cwd = '/home/renatus',
+         default_prog = { 'zsh', '-l' },
       },
    },
 }

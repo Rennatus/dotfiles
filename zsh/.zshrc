@@ -19,9 +19,7 @@ setopt HIST_IGNORE_ALL_DUPS
 #
 
 # Set editor default keymap to emacs (`-e`) or vi (`-v`)
-bindkey -v
-
-
+bindkey -e
 
 # Prompt for spelling correction of commands.
 #setopt CORRECT
@@ -29,7 +27,7 @@ bindkey -v
 # Customize spelling correction prompt.
 #SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 
-# Remove path separator from WORDCHARS.:sequences
+# Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
 
 # -----------------
@@ -130,29 +128,5 @@ for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
 
-source ~/dotfiles/zsh/fzf.zsh
-source ~/dotfiles/zsh/vim.zsh
-
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-#export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
-#export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-#export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-
-export CC=clang
-export CXX=clang++
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
+[ -f ~/dotfiles/zsh/fzf.zsh ] &&  source ~/dotfiles/zsh/fzf.zsh
+[ -f ~/dotfiles/zsh/vim.zsh ] &&  source ~/dotfiles/zsh/vim.zsh

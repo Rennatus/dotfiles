@@ -82,14 +82,13 @@ local TITLE_INSET = {
 }
 
 local RENDER_VARIANTS = {
-   { 'scircle_left', 'title', 'padding', 'scircle_right' },
-   { 'scircle_left', 'title', 'unseen_output', 'padding', 'scircle_right' },
-   { 'scircle_left', 'admin', 'title', 'padding', 'scircle_right' },
-   { 'scircle_left', 'admin', 'title', 'unseen_output', 'padding', 'scircle_right' },
-   { 'scircle_left', 'wsl', 'title', 'padding', 'scircle_right' },
-   { 'scircle_left', 'wsl', 'title', 'unseen_output', 'padding', 'scircle_right' },
+   { 'scircle_left', 'title', 'padding', 'tab_id','scircle_right' },
+   { 'scircle_left', 'title', 'unseen_output', 'padding', 'tab_id','scircle_right' },
+   { 'scircle_left', 'admin', 'title', 'padding', 'tab_id','scircle_right' },
+   { 'scircle_left', 'admin', 'title', 'unseen_output', 'padding', 'tab_id','scircle_right' },
+   { 'scircle_left', 'wsl', 'title', 'padding', 'tab_id','scircle_right' },
+   { 'scircle_left', 'wsl', 'title', 'unseen_output', 'padding','tab_id', 'scircle_right' },
 }
-
 
 ---@type table<string, Cells.SegmentColors>
 -- stylua: ignore
@@ -232,7 +231,7 @@ function Tab:set_info(event_opts, tab, max_width)
    self.title = create_title(process_name, tab.active_pane.title, max_width, inset)
 end
 
-function Tab:create_cells()
+function Tab:create_cells(tab_id)
    local attr = self.cells.attr
    self.cells
       :add_segment('scircle_left', GLYPH_SCIRCLE_LEFT)
@@ -241,6 +240,7 @@ function Tab:create_cells()
       :add_segment('title', ' ', nil, attr(attr.intensity('Bold')))
       :add_segment('unseen_output', ' ' .. GLYPH_CIRCLE)
       :add_segment('padding', ' ')
+      :add_segment('tab_id',tab_id)
       :add_segment('scircle_right', GLYPH_SCIRCLE_RIGHT)
 end
 
@@ -283,6 +283,7 @@ function Tab:update_cells(event_opts, is_active, hover)
       :update_segment_colors('title', colors['text_' .. tab_state])
       :update_segment_colors('unseen_output', colors['unseen_output_' .. tab_state])
       :update_segment_colors('padding', colors['text_' .. tab_state])
+      :update_segment_colors('tab_id', colors['text_' .. tab_state])
       :update_segment_colors('scircle_right', colors['scircle_' .. tab_state])
 end
 
@@ -356,7 +357,7 @@ M.setup = function(opts)
       if not tab_list[tab.tab_id] then
          tab_list[tab.tab_id] = Tab:new()
          tab_list[tab.tab_id]:set_info(valid_opts, tab, max_width)
-         tab_list[tab.tab_id]:create_cells()
+         tab_list[tab.tab_id]:create_cells(tostring(tab.tab_index + 1))
          return tab_list[tab.tab_id]:render()
       end
 
