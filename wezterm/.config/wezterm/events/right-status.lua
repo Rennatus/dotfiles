@@ -2,6 +2,7 @@ local wezterm = require('wezterm')
 local umath = require('utils.math')
 local Cells = require('utils.cells')
 local OptsValidator = require('utils.opts-validator')
+local color_schemes = require("colors.custom")
 
 ---@alias Event.RightStatusOptions { date_format?: string }
 
@@ -13,7 +14,7 @@ EVENT_OPTS.schema = {
    {
       name = 'date_format',
       type = 'string',
-      default = '%a %H:%M:%S',
+      default = '%Y-%m-%d %H:%M:%S',
    },
 }
 EVENT_OPTS.validator = OptsValidator:new(EVENT_OPTS.schema)
@@ -23,6 +24,8 @@ local attr = Cells.attr
 
 local M = {}
 
+local GLYPH_SEMI_CIRCLE_LEFT = nf.ple_left_half_circle_thick --[[ '' ]]
+local GLYPH_SEMI_CIRCLE_RIGHT = nf.ple_right_half_circle_thick --[[ '' ]]
 local ICON_SEPARATOR = nf.oct_dash
 local ICON_DATE = nf.fa_calendar
 
@@ -56,19 +59,25 @@ local charging_icons = {
 ---@type table<string, Cells.SegmentColors>
 -- stylua: ignore
 local colors = {
-   date      = { fg = '#fab387', bg = 'rgba(0, 0, 0, 0.4)' },
-   battery   = { fg = '#f9e2af', bg = 'rgba(0, 0, 0, 0.4)' },
-   separator = { fg = '#74c7ec', bg = 'rgba(0, 0, 0, 0.4)' }
+   date_left  = { fg = '#fab387', bg = color_schemes.background },
+   date       = { fg = color_schemes.background, bg = '#fab387' },
+   date_txt   = { fg = color_schemes.background, bg = color_schemes.foreground },
+   date_right = { fg = color_schemes.foreground, bg = color_schemes.background },
+   battery    = { fg = '#f9e2af', bg = color_schemes.background },
+   separator  = { fg = '#74c7ec', bg = color_schemes.background }
 }
 
 local cells = Cells:new()
 
 cells
-   :add_segment('date_icon', ICON_DATE .. '  ', colors.date, attr(attr.intensity('Bold')))
-   :add_segment('date_text', '', colors.date, attr(attr.intensity('Bold')))
-   :add_segment('separator', ' ' .. ICON_SEPARATOR .. '  ', colors.separator)
-   :add_segment('battery_icon', '', colors.battery)
-   :add_segment('battery_text', '', colors.battery, attr(attr.intensity('Bold')))
+
+    :add_segment('date_left', GLYPH_SEMI_CIRCLE_LEFT, colors.date_left)
+    :add_segment('date_icon', ICON_DATE .. '  ', colors.date, attr(attr.intensity('Bold')))
+    :add_segment('date_text', ' ', colors.date_txt, attr(attr.intensity('Bold')))
+    :add_segment('date_right', GLYPH_SEMI_CIRCLE_RIGHT, colors.date_right)
+    :add_segment('separator', ' ' .. ICON_SEPARATOR .. '  ', colors.separator)
+    :add_segment('battery_icon', ' ', colors.battery)
+    :add_segment('battery_text', ' ', colors.battery, attr(attr.intensity('Bold')))
 
 ---@return string, string
 local function battery_info()
@@ -103,13 +112,14 @@ M.setup = function(opts)
       local battery_text, battery_icon = battery_info()
 
       cells
-         :update_segment_text('date_text', wezterm.strftime(valid_opts.date_format))
-         :update_segment_text('battery_icon', battery_icon)
-         :update_segment_text('battery_text', battery_text)
+          :update_segment_text('date_text', wezterm.strftime(valid_opts.date_format))
+          :update_segment_text('battery_icon', battery_icon)
+          :update_segment_text('battery_text', battery_text)
 
       window:set_right_status(
          wezterm.format(
-            cells:render({ 'date_icon', 'date_text', 'separator', 'battery_icon', 'battery_text' })
+            cells:render({ 'date_left', 'date_icon', 'date_text', 'date_right', 'separator', 'battery_icon',
+               'battery_text' })
          )
       )
    end)

@@ -130,3 +130,21 @@ unset key
 
 [ -f ~/dotfiles/zsh/fzf.zsh ] &&  source ~/dotfiles/zsh/fzf.zsh
 [ -f ~/dotfiles/zsh/vim.zsh ] &&  source ~/dotfiles/zsh/vim.zsh
+
+# 检测操作系统类型
+OS_TYPE=$(uname)
+# 根据操作系统类型加载特定配置
+case "$OS_TYPE" in
+    Linux)
+        [[ -f ~/dotfiles/zsh/linux.zsh ]] && source ~/dotfiles/zsh/linux.zsh
+        ;;
+    Darwin)
+        [[ -f ~/dotfiles/zsh/mac.zsh ]] && source ~/dotfiles/zsh/mac.zsh
+        ;;
+    CYGWIN*|MINGW32*|MSYS*|MINGW*)
+        [[ -f ~/dotfiles/zsh/win.zsh ]] && source ~/dotfiles/zsh/win.zsh
+        ;;
+    *)
+        echo "Unknown OS type: $OS_TYPE"
+        ;;
+esac

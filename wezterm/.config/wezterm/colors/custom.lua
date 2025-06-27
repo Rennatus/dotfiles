@@ -59,6 +59,7 @@ local colorscheme = {
    },
    tab_bar = {
       background = 'rgba(0, 0, 0, 0.4)',
+      --background = mocha.base,
       active_tab = {
          bg_color = mocha.surface2,
          fg_color = mocha.text,
@@ -87,7 +88,7 @@ local colorscheme = {
       [17] = mocha.rosewater,
    },
    scrollbar_thumb = mocha.surface2,
-   split = mocha.overlay0,
+   split = mocha.peach,
    compose_cursor = mocha.flamingo,
 }
 
