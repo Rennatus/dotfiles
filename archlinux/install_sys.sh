@@ -135,7 +135,7 @@ umount /mnt
 mount -o noatime,compress=zstd,space_cache=v2,subvol=@ "${ROOT_PART}" /mnt
 
 # Create mount points
-mkdir -p /mnt/{home,var,tmp,.snapshots,boot/efi}
+mkdir -p /mnt/{home,var,tmp,.snapshots,boot}
 
 # Mount other subvolumes
 mount -o noatime,compress=zstd,space_cache=v2,subvol=@home "${ROOT_PART}" /mnt/home
@@ -144,7 +144,7 @@ mount -o noatime,compress=zstd,space_cache=v2,subvol=@tmp "${ROOT_PART}" /mnt/tm
 mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots "${ROOT_PART}" /mnt/.snapshots
 
 # Mount EFI partition and activate swap
-mount "${BOOT_PART}" /mnt/boot/efi
+mount "${BOOT_PART}" /mnt/boot
 swapon "${SWAP_PART}"
 
 # ----------------------------
@@ -165,25 +165,27 @@ pacstrap -K /mnt \
 # 4. Basic System Configuration
 # ----------------------------
 echo "=== Configuring system ==="
-# Generate fstab
-genfstab -U /mnt >> /mnt/etc/fstab &>/dev/null
 
-# # Configure Chinese mirrors for the new system
-# echo "=== Configuring Chinese mirrors for new system ==="
-# mkdir -p /mnt/etc/pacman.d
-# cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+# Generate fstab
+genfstab -U /mnt >> /mnt/etc/fstab
+
+# Configure Chinese mirrors for the new system
+
+echo "=== Configuring Chinese mirrors for new system ==="
+mkdir -p /mnt/etc/pacman.d
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
 # Chroot into new system to execute configuration
 arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   # Set timezone
   ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
-  hwclock --systohc &>/dev/null
+  hwclock --systohc
 
   # Configure localization (add multiple languages via loop)
  for locale in "${LOCALES[@]}"; do
     echo "\${locale} UTF-8" >> /etc/locale.gen
   done
-  locale-gen &>/dev/null
+  locale-gen 
   echo "LANG=${DEFAULT_LOCALE} UTF-8" > /etc/locale.conf
 
   # Set hostname
@@ -193,17 +195,17 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   echo "127.0.1.1 ${HOSTNAME}.localdomain ${HOSTNAME}" >> /etc/hosts
 
   # Set root password
-  echo "root:${ROOT_PASSWORD}" | chpasswd &>/dev/null
+  echo "root:${ROOT_PASSWORD}" | chpasswd
 
   # Create regular user and add to sudo group
-  useradd -m -G wheel -s /bin/zsh ${USER_NAME} &>/dev/null
-  echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd &>/dev/null
+  useradd -m -G wheel -s /bin/zsh ${USER_NAME} 
+  echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd 
   echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
   # Install bootloader (GRUB)
   sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
-  grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux &>/dev/null
-  grub-mkconfig -o /boot/grub/grub.cfg &>/dev/null
+  grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux
+  grub-mkconfig -o /boot/grub/grub.cfg 
 
   # Enable necessary services
   systemctl enable NetworkManager
