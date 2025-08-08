@@ -183,10 +183,10 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
 
   # Configure localization (add multiple languages via loop)
  for locale in "${LOCALES[@]}"; do
-    echo "${locale}" >> /etc/locale.gen
+    echo "${locale}  UTF-8" >> /etc/locale.gen
   done
   locale-gen 
-  echo "LANG=${DEFAULT_LOCALE} UTF-8" > /etc/locale.conf
+  echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
 
   # Set hostname
   echo "${HOSTNAME}" > /etc/hostname
