@@ -8,7 +8,7 @@ BOOT_SIZE="512M"                 # EFI boot partition size
 HOSTNAME="arch-linux"            # System hostname
 TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
 # System locale
-LOCALES="en_US.UTF-8 zh_CN.UTF-8 zh_TW.UTF-8"
+LOCALES=("en_US.UTF-8 zh_CN.UTF-8 zh_TW.UTF-8")
 DEFAULT_LOCALE="en_US.UTF-8"                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
@@ -166,6 +166,13 @@ echo "=== Configuring system ==="
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure Chinese mirrors for the new system
+# Assemble locale configuration commands
+LOCALE_COMMANDS=""
+for locale in "${LOCALES[@]}"; do
+  LOCALE_COMMANDS+="sed -i 's/^#${locale} UTF-8/${locale} UTF-8/' /etc/locale.gen; "
+done
+LOCALE_COMMANDS+="locale-gen; echo 'LANG=${DEFAULT_LOCALE}' > /etc/locale.conf"
+echo "LOCALE_COMMANDS : $LOCALE_COMMANDS"
 
 echo "=== Configuring Chinese mirrors for new system ==="
 mkdir -p /mnt/etc/pacman.d
@@ -178,11 +185,7 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   hwclock --systohc
   
   # Configure localization (add multiple languages via loop)
-  for locale in "${LOCALES}"; do
-    sed -i "s/^#${locale} UTF-8/${locale} UTF-8/" /etc/locale.gen
-  done
-  locale-gen 
-  echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
+  ${LOCALE_COMMANDS}
 
   # Set hostname
   echo "${HOSTNAME}" > /etc/hostname
