@@ -62,13 +62,19 @@ echo "=== Starting disk partitioning ==="
 # Clear existing partition table
 parted "${DISK}" -s mklabel gpt
 
-# 转换为MiB单位的数值（恢复SWAP_SIZE_MIB格式命名）
-SWAP_SIZE_MIB=$(numfmt --from=iec "${SWAP_SIZE}" | numfmt --to=iec --suffix=MiB | sed 's/MiB//')
-BOOT_SIZE_MIB=$(numfmt --from=iec "${BOOT_SIZE}" | numfmt --to=iec --suffix=MiB | sed 's/MiB//')
+# 统一转换为字节（1024进制），确保单位体系一致
+SWAP_SIZE_BYTES=$(numfmt --from=iec "${SWAP_SIZE}")
+BOOT_SIZE_BYTES=$(numfmt --from=iec "${BOOT_SIZE}")
 
-# 计算分区位置（使用恢复的变量名）
-BOOT_START="${SWAP_SIZE_MIB}MiB"
-BOOT_END="$((SWAP_SIZE_MIB + BOOT_SIZE_MIB))MiB"
+# 转换为MiB（1024进制），保留单位字符串用于parted
+SWAP_SIZE_MIB_STR=$(numfmt --from=iec --to=iec --suffix=MiB "${SWAP_SIZE_BYTES}")
+BOOT_SIZE_MIB_STR=$(numfmt --from=iec --to=iec --suffix=MiB "${BOOT_SIZE_BYTES}")
+
+# 计算分区位置（全部使用1024进制MiB，确保连续无间隙）
+# 分区1结束位置 = 1MiB + SWAP_SIZE_MIB（与分区2起始位置严格对齐）
+BOOT_START="${SWAP_SIZE_MIB_STR}"
+# 分区2结束位置 = 分区1结束位置 + BOOT_SIZE_MIB
+BOOT_END=$(numfmt --from=iec --to=iec --suffix=MiB $((SWAP_SIZE_BYTES + BOOT_SIZE_BYTES)))
 
 # Partition 1: Swap partition
 parted "${DISK}" -s -a optimal mkpart primary linux-swap 1MiB "${SWAP_SIZE}"
