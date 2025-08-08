@@ -3,14 +3,14 @@ set -euo pipefail
 
 # ==================== Configuration Parameters (Modify as needed) ====================
 DISK="/dev/sda"                  # Target disk (double-check this!)
-SWAP_SIZE="4G"                   # Swap partition size
+SWAP_SIZE="1G"                   # Swap partition size
 BOOT_SIZE="512M"                 # EFI boot partition size
 HOSTNAME="arch-linux"            # System hostname
 TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
 # System locale
 LOCALES=(
-  "en_US.UTF-8"
-  "zh_CN.UTF-8"
+  "en_US.UTF-8 UTF-8"
+  "zh_CN.UTF-8 UTF-8"
 )                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
@@ -61,12 +61,21 @@ echo "=== Starting disk partitioning ==="
 
 # Clear existing partition table
 parted "${DISK}" -s mklabel gpt
+
+# 转换为MiB单位的数值（恢复SWAP_SIZE_MIB格式命名）
+SWAP_SIZE_MIB=$(numfmt --from=iec "${SWAP_SIZE}" | numfmt --to=iec --suffix=MiB | sed 's/MiB//')
+BOOT_SIZE_MIB=$(numfmt --from=iec "${BOOT_SIZE}" | numfmt --to=iec --suffix=MiB | sed 's/MiB//')
+
+# 计算分区位置（使用恢复的变量名）
+BOOT_START="${SWAP_SIZE_MIB}MiB"
+BOOT_END="$((SWAP_SIZE_MIB + BOOT_SIZE_MIB))MiB"
+
 # Partition 1: Swap partition
 parted "${DISK}" -s -a optimal mkpart primary linux-swap 1MiB "${SWAP_SIZE}"
 # Partition 2: EFI boot partition
-parted "${DISK}" -s -a optimal mkpart primary fat32 "${SWAP_SIZE}" "$(( $(numfmt --from=iec "${SWAP_SIZE}") + $(numfmt --from=iec "${BOOT_SIZE}") ))b"
+parted "${DISK}" -s -a optimal mkpart primary fat32 "${BOOT_START}" "${BOOT_END}"
 # Partition 3: Btrfs root partition (remaining space)
-parted "${DISK}" -s -a optimal mkpart primary btrfs "$(( $(numfmt --from=iec "${SWAP_SIZE}") + $(numfmt --from=iec "${BOOT_SIZE}") ))b" 100%
+parted "${DISK}" -s -a optimal mkpart primary btrfs "${BOOT_END}" 100%
 
 # Mark EFI partition as bootable
 parted "${DISK}" -s set 2 esp on
