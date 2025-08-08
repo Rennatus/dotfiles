@@ -12,7 +12,8 @@ LOCALES=(
   "en_US.UTF-8"
   "zh_CN.UTF-8"
   "zh_TW.UTF-8"
-)                                 
+)
+DEFAULT_LOCALE = "en_US.UTF-8"                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
 USER_PASSWORD="1"                # Regular user password
@@ -182,7 +183,7 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
     echo "\${locale} UTF-8" >> /etc/locale.gen
   done
   locale-gen &>/dev/null
-  echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
+  echo "LANG=${DEFAULT_LOCALE} UTF-8" > /etc/locale.conf
 
   # Set hostname
   echo "${HOSTNAME}" > /etc/hostname
