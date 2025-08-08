@@ -167,10 +167,10 @@ echo "=== Configuring system ==="
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab &>/dev/null
 
-# Configure Chinese mirrors for the new system
-echo "=== Configuring Chinese mirrors for new system ==="
-mkdir -p /mnt/etc/pacman.d
-cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+# # Configure Chinese mirrors for the new system
+# echo "=== Configuring Chinese mirrors for new system ==="
+# mkdir -p /mnt/etc/pacman.d
+# cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
 # Chroot into new system to execute configuration
 arch-chroot /mnt /bin/bash -euo pipefail <<EOF
