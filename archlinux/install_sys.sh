@@ -182,8 +182,8 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   hwclock --systohc
 
   # Configure localization (add multiple languages via loop)
- for locale in "${LOCALES[@]}"; do
-    echo "${locale}  UTF-8" >> /etc/locale.gen
+  for locale in "${LOCALES[@]}"; do
+    sed -i "s/^#${locale} UTF-8/${locale} UTF-8/" /etc/locale.gen
   done
   locale-gen 
   echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
