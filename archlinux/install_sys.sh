@@ -13,7 +13,7 @@ LOCALES=(
   "zh_CN.UTF-8"
   "zh_TW.UTF-8"
 )
-DEFAULT_LOCALE = "en_US.UTF-8"                                 
+DEFAULT_LOCALE="en_US.UTF-8"                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
 USER_PASSWORD="1"                # Regular user password
