@@ -165,12 +165,6 @@ echo "=== Configuring system ==="
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab &>/dev/null
 
-# Prepare localization configuration commands (process array in loop)
-local locale_commands=""
-for locale in "${LOCALES[@]}"; do
-  locale_commands+="echo \"${locale} UTF-8\" >> /etc/locale.gen; "
-done
-
 # Configure Chinese mirrors for the new system
 echo "=== Configuring Chinese mirrors for new system ==="
 mkdir -p /mnt/etc/pacman.d
@@ -183,7 +177,9 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   hwclock --systohc &>/dev/null
 
   # Configure localization (add multiple languages via loop)
-  ${locale_commands}
+ for locale in "${LOCALES[@]}"; do
+    echo "\${locale} UTF-8" >> /etc/locale.gen
+  done
   locale-gen &>/dev/null
   echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
 
@@ -200,9 +196,6 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   useradd -m -G wheel -s /bin/zsh ${USER_NAME} &>/dev/null
   echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd &>/dev/null
   echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
-  # 设置 root 用户默认shell为zsh
-  chsh -s /bin/zsh root &>/dev/null
 
   # Install bootloader (GRUB)
   grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux &>/dev/null
