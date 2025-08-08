@@ -143,7 +143,6 @@ pacstrap -K /mnt \
   networkmanager \
   vim sudo zsh \
   git \
-  &>/dev/null
 
 # ----------------------------
 # 4. Basic System Configuration
