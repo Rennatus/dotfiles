@@ -37,6 +37,7 @@ sleep 3
 # ----------------------------
 echo "=== Configuring Chinese mirror sources ==="
 
+systemctl stop reflector.service 
 # Backup original mirror list
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 
