@@ -180,9 +180,10 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   # Set timezone
   ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
   hwclock --systohc
-
+  
   # Configure localization (add multiple languages via loop)
-  for locale in "${LOCALES[@]}"; do
+  LOCALES_STR=(${LOCALES})
+  for locale in "${LOCALES_STR[@]}"; do
     sed -i "s/^#${locale} UTF-8/${locale} UTF-8/" /etc/locale.gen
   done
   locale-gen 
@@ -204,7 +205,7 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
 
   # Install bootloader (GRUB)
   sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
-  grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux
+  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux
   grub-mkconfig -o /boot/grub/grub.cfg 
 
   # Enable necessary services
