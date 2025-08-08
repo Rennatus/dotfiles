@@ -73,20 +73,6 @@ fi
 # Warning message (no confirmation prompt)
 echo "WARNING: All data on disk ${DISK} will be erased automatically!"
 
-# Primary method using sgdisk (handles both MBR and GPT)
-if ! sgdisk --zap-all "${DISK}" &>/dev/null; then
-    echo "Warning: sgdisk failed to clear partition table, trying fallback method..."
-    # Fallback: Erase MBR and GPT backup manually
-    dd if=/dev/zero of="${DISK}" bs=512 count=1 &>/dev/null          # Erase MBR
-    dd if=/dev/zero of="${DISK}" seek=$(( $(blockdev --getsz "${DISK}") - 34 )) bs=1 count=34 &>/dev/null  # Erase GPT backup
-fi
-
-# Verify partition table was cleared
-if [[ -n "$(blkid "${DISK}"*)" || -n "$(parted "${DISK}" print 2>/dev/null | grep -v 'Error')" ]]; then
-    echo "Error: Failed to clear partition table. Disk may be in use."
-    exit 1
-fi
-
 # Clear existing partition table
 parted "${DISK}" -s mklabel gpt
 
