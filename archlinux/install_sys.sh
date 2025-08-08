@@ -1,0 +1,202 @@
+#!/bin/bash
+set -euo pipefail
+
+# ==================== Configuration Parameters (Modify as needed) ====================
+DISK="/dev/sda"                  # Target disk (double-check this!)
+SWAP_SIZE="4G"                   # Swap partition size
+BOOT_SIZE="512M"                 # EFI boot partition size
+HOSTNAME="arch-linux"            # System hostname
+TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
+# System locale
+LOCALES=(
+  "en_US.UTF-8"
+  "zh_CN.UTF-8"
+)                                 
+ROOT_PASSWORD="1"                # Root user password
+USER_NAME="selene"               # Regular username
+USER_PASSWORD="1"                # Regular user password
+# Chinese mirror sources (priority from high to low)
+MIRRORS=(
+  "https://mirrors.tuna.tsinghua.edu.cn/archlinux/\$repo/os/\$arch"
+  "https://mirrors.ustc.edu.cn/archlinux/\$repo/os/\$arch"
+  "https://mirror.sjtu.edu.cn/archlinux/\$repo/os/\$arch"
+  "https://mirrors.cqu.edu.cn/archlinux/\$repo/os/\$arch"
+)
+# ====================================================================================
+
+# Warning message
+echo "============================================="
+echo "WARNING: This script will erase all data on ${DISK} and automatically install Arch Linux"
+echo "Starting in 3 seconds (press Ctrl+C to abort)..."
+echo "============================================="
+sleep 3
+# ----------------------------
+# 0. Configure Chinese mirrors (execute before installation)
+# ----------------------------
+echo "=== Configuring Chinese mirror sources ==="
+
+# Backup original mirror list
+cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+
+# Clear existing mirror list
+> /etc/pacman.d/mirrorlist
+
+# Add Chinese sources to mirror list (use first)
+for mirror in "${MIRRORS[@]}"; do
+  echo "Server = $mirror" >> /etc/pacman.d/mirrorlist
+  echo "Added mirror source: $mirror"
+done
+
+# Add default official sources (as fallback)
+echo "Server = https://archive.archlinux.org/repos/\$repo/os/\$arch" >> /etc/pacman.d/mirrorlist
+
+# Update source cache
+pacman -Syy &>/dev/null
+echo "Chinese mirror sources configured successfully"
+
+# ----------------------------
+# 1. Disk Partitioning & Formatting
+# ----------------------------
+echo "=== Starting disk partitioning ==="
+
+# Clear existing partition table
+parted "${DISK}" -s mklabel gpt
+# Partition 1: Swap partition
+parted "${DISK}" -s -a optimal mkpart primary linux-swap 1MiB "${SWAP_SIZE}"
+# Partition 2: EFI boot partition
+parted "${DISK}" -s -a optimal mkpart primary fat32 "${SWAP_SIZE}" "$(( $(numfmt --from=iec "${SWAP_SIZE}") + $(numfmt --from=iec "${BOOT_SIZE}") ))b"
+# Partition 3: Btrfs root partition (remaining space)
+parted "${DISK}" -s -a optimal mkpart primary btrfs "$(( $(numfmt --from=iec "${SWAP_SIZE}") + $(numfmt --from=iec "${BOOT_SIZE}") ))b" 100%
+
+# Mark EFI partition as bootable
+parted "${DISK}" -s set 2 esp on
+
+# Define partition paths
+SWAP_PART="${DISK}1"
+BOOT_PART="${DISK}2"
+ROOT_PART="${DISK}3"
+
+# Format partitions
+mkswap -L SWAP "${SWAP_PART}" &>/dev/null
+mkfs.fat -F32 -n EFI "${BOOT_PART}" &>/dev/null
+mkfs.btrfs -L ROOT -f "${ROOT_PART}" &>/dev/null
+
+# ----------------------------
+# 2. Btrfs Subvolume Configuration & Mounting
+# ----------------------------
+echo "=== Configuring Btrfs subvolumes ==="
+
+# Temporarily mount root partition
+mount "${ROOT_PART}" /mnt
+
+# Create subvolumes
+btrfs subvolume create /mnt/@ &>/dev/null
+btrfs subvolume create /mnt/@home &>/dev/null
+btrfs subvolume create /mnt/@var &>/dev/null
+btrfs subvolume create /mnt/@tmp &>/dev/null
+btrfs subvolume create /mnt/@snapshots &>/dev/null
+
+# Unmount temporary mount
+umount /mnt
+
+# Remount subvolumes with optimized parameters
+mount -o noatime,compress=zstd,space_cache=v2,subvol=@ "${ROOT_PART}" /mnt
+
+# Create mount points
+mkdir -p /mnt/{home,var,tmp,.snapshots,boot/efi}
+
+# Mount other subvolumes
+mount -o noatime,compress=zstd,space_cache=v2,subvol=@home "${ROOT_PART}" /mnt/home
+mount -o noatime,compress=zstd,space_cache=v2,subvol=@var "${ROOT_PART}" /mnt/var
+mount -o noatime,compress=zstd,space_cache=v2,subvol=@tmp "${ROOT_PART}" /mnt/tmp
+mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots "${ROOT_PART}" /mnt/.snapshots
+
+# Mount EFI partition and activate swap
+mount "${BOOT_PART}" /mnt/boot/efi
+swapon "${SWAP_PART}"
+
+# ----------------------------
+# 3. Install Base System
+# ----------------------------
+echo "=== Installing system components ==="
+
+# Install base system packages (add/remove as needed)
+pacstrap -K /mnt \
+  base base-devel linux linux-firmware \
+  btrfs-progs \
+  grub efibootmgr \
+  networkmanager \
+  vim sudo zsh \
+  git \
+  &>/dev/null
+
+# ----------------------------
+# 4. Basic System Configuration
+# ----------------------------
+echo "=== Configuring system ==="
+# Generate fstab
+genfstab -U /mnt >> /mnt/etc/fstab &>/dev/null
+
+# Prepare localization configuration commands (process array in loop)
+local locale_commands=""
+for locale in "${LOCALES[@]}"; do
+  locale_commands+="echo \"${locale} UTF-8\" >> /etc/locale.gen; "
+done
+
+# Configure Chinese mirrors for the new system
+echo "=== Configuring Chinese mirrors for new system ==="
+mkdir -p /mnt/etc/pacman.d
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+
+# Chroot into new system to execute configuration
+arch-chroot /mnt /bin/bash -euo pipefail <<EOF
+  # Set timezone
+  ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+  hwclock --systohc &>/dev/null
+
+  # Configure localization (add multiple languages via loop)
+  ${locale_commands}
+  locale-gen &>/dev/null
+  echo "LANG=${DEFAULT_LOCALE}" > /etc/locale.conf
+
+  # Set hostname
+  echo "${HOSTNAME}" > /etc/hostname
+  echo "127.0.0.1 localhost" >> /etc/hosts
+  echo "::1       localhost" >> /etc/hosts
+  echo "127.0.1.1 ${HOSTNAME}.localdomain ${HOSTNAME}" >> /etc/hosts
+
+  # Set root password
+  echo "root:${ROOT_PASSWORD}" | chpasswd &>/dev/null
+
+  # Create regular user and add to sudo group
+  useradd -m -G wheel -s /bin/zsh ${USER_NAME} &>/dev/null
+  echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd &>/dev/null
+  echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+  # 设置 root 用户默认shell为zsh
+  chsh -s /bin/zsh root &>/dev/null
+
+  # Install bootloader (GRUB)
+  grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux &>/dev/null
+  grub-mkconfig -o /boot/grub/grub.cfg &>/dev/null
+
+  # Enable necessary services
+  systemctl enable NetworkManager
+EOF
+# ----------------------------
+# 5. Cleanup and completion
+# ----------------------------
+echo "=== Installation completed ==="
+
+# Unmount partitions
+umount -R /mnt
+swapoff "${SWAP_PART}"
+echo "Arch Linux has been successfully installed to ${DISK}"
+echo "Chinese mirror sources used:"
+for mirror in "${MIRRORS[@]}"; do
+  echo "  - $mirror"
+done
+echo "You can log in with these credentials after reboot:"
+echo "  - root: ${ROOT_PASSWORD}"
+echo "  - ${USER_NAME}: ${USER_PASSWORD}"
+echo "It's recommended to remove installation media before rebooting"
