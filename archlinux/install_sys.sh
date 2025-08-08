@@ -8,7 +8,7 @@ BOOT_SIZE="512M"                 # EFI boot partition size
 HOSTNAME="arch-linux"            # System hostname
 TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
 # System locale
-LOCALES=("en_US.UTF-8 zh_CN.UTF-8 zh_TW.UTF-8")
+LOCALES="en_US.UTF-8 zh_CN.UTF-8 zh_TW.UTF-8"
 DEFAULT_LOCALE="en_US.UTF-8"                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
