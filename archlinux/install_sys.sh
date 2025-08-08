@@ -172,7 +172,6 @@ for locale in "${LOCALES[@]}"; do
   LOCALE_COMMANDS+="sed -i 's/^#${locale} UTF-8/${locale} UTF-8/' /etc/locale.gen; "
 done
 LOCALE_COMMANDS+="locale-gen; echo 'LANG=${DEFAULT_LOCALE}' > /etc/locale.conf"
-echo "LOCALE_COMMANDS : $LOCALE_COMMANDS"
 
 echo "=== Configuring Chinese mirrors for new system ==="
 mkdir -p /mnt/etc/pacman.d
