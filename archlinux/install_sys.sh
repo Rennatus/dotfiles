@@ -155,7 +155,7 @@ echo "=== Installing system components ==="
 pacstrap -K /mnt \
   base base-devel linux linux-firmware \
   btrfs-progs \
-  grub efibootmgr \
+  grub efibootmgr os-prober\
   networkmanager \
   vim sudo zsh \
   git \
@@ -200,6 +200,7 @@ arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
   # Install bootloader (GRUB)
+  sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
   grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux &>/dev/null
   grub-mkconfig -o /boot/grub/grub.cfg &>/dev/null
 
