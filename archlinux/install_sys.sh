@@ -9,8 +9,8 @@ HOSTNAME="arch-linux"            # System hostname
 TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
 # System locale
 LOCALES=(
-  "en_US.UTF-8 UTF-8"
-  "zh_CN.UTF-8 UTF-8"
+  "en_US.UTF-8"
+  "zh_CN.UTF-8"
 )                                 
 ROOT_PASSWORD="1"                # Root user password
 USER_NAME="selene"               # Regular username
