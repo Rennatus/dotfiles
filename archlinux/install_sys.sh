@@ -58,6 +58,38 @@ echo "Chinese mirror sources configured successfully"
 # 1. Disk Partitioning & Formatting
 # ----------------------------
 echo "=== Starting disk partitioning ==="
+# Check if required variables are defined
+if [[ -z "${DISK}" || -z "${SWAP_SIZE}" || -z "${BOOT_SIZE}" ]]; then
+    echo "Error: Please define DISK, SWAP_SIZE, and BOOT_SIZE variables"
+    exit 1
+fi
+
+# Check if disk device exists
+if [[ ! -b "${DISK}" ]]; then
+    echo "Error: Disk device ${DISK} does not exist"
+    exit 1
+fi
+# Warning and confirmation (safety measure)
+echo "WARNING: All data on disk ${DISK} will be erased!"
+read -p "Please confirm to continue (type YES): " CONFIRM
+if [[ "${CONFIRM}" != "YES" ]]; then
+    echo "Operation cancelled"
+    exit 0
+fi
+# Step 1: Clear existing partition tables
+# Primary method using sgdisk (handles both MBR and GPT)
+if ! sgdisk --zap-all "${DISK}" &>/dev/null; then
+    echo "Warning: sgdisk failed to clear partition table, trying fallback method..."
+    # Fallback: Erase MBR and GPT backup manually
+    dd if=/dev/zero of="${DISK}" bs=512 count=1 &>/dev/null          # Erase MBR
+    dd if=/dev/zero of="${DISK}" seek=$(( $(blockdev --getsz "${DISK}") - 34 )) bs=1 count=34 &>/dev/null  # Erase GPT backup
+fi
+
+# Verify partition table was cleared
+if [[ -n "$(blkid "${DISK}"*)" || -n "$(parted "${DISK}" print 2>/dev/null | grep -v 'Error')" ]]; then
+    echo "Error: Failed to clear partition table. Disk may be in use."
+    exit 1
+fi
 
 # Clear existing partition table
 parted "${DISK}" -s mklabel gpt
