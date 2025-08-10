@@ -1,0 +1,10 @@
+# --------------------------------------------------- // Shell
+python                                                 #
+stow                                                   #
+fzf                                                    #
+eza                                                    # file lister for zsh
+duf                                                    # prettier version of df for zsh
+bat                                                    # enhanced version of cat
+starship                                               # customizable shell prompt written in Rust
+fastfetch                                              # system information fetch tool
+gitui                                                  #

@@ -8,14 +8,13 @@ BOOT_SIZE="512M"                 # EFI boot partition size
 HOSTNAME="arch-linux"            # System hostname
 TIMEZONE="Asia/Shanghai"         # Timezone (e.g. America/New_York)
 # System locale
-LOCALES=("en_US.UTF-8 zh_CN.UTF-8 zh_TW.UTF-8")
-DEFAULT_LOCALE="en_US.UTF-8"                                 
+LOCALES=("en_US" "zh_CN" "zh_TW")
+DEFAULT_LOCALE="en_US"                       
 ROOT_PASSWORD="1"                # Root user password
-USER_NAME="selene"               # Regular username
+USER_NAME="renatus"               # Regular username
 USER_PASSWORD="1"                # Regular user password
 # Chinese mirror sources (priority from high to low)
 MIRRORS=(
-  "https://mirrors.tuna.tsinghua.edu.cn/archlinux/\$repo/os/\$arch"
   "https://mirrors.ustc.edu.cn/archlinux/\$repo/os/\$arch"
   "https://mirror.sjtu.edu.cn/archlinux/\$repo/os/\$arch"
   "https://mirrors.cqu.edu.cn/archlinux/\$repo/os/\$arch"
@@ -155,8 +154,8 @@ pacstrap -K /mnt \
   grub efibootmgr os-prober\
   networkmanager \
   vim sudo zsh \
-  git \
-
+  git\
+  
 # ----------------------------
 # 4. Basic System Configuration
 # ----------------------------
@@ -167,11 +166,9 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure Chinese mirrors for the new system
 # Assemble locale configuration commands
-LOCALE_COMMANDS=""
 for locale in "${LOCALES[@]}"; do
-  LOCALE_COMMANDS+="sed -i 's/^#${locale} UTF-8/${locale} UTF-8/' /etc/locale.gen; "
+  sed -i "s/^#${locale}\.UTF-8 UTF-8/${locale}.UTF-8 UTF-8/" /mnt/etc/locale.gen
 done
-LOCALE_COMMANDS+="locale-gen; echo 'LANG=${DEFAULT_LOCALE}' > /etc/locale.conf"
 
 echo "=== Configuring Chinese mirrors for new system ==="
 mkdir -p /mnt/etc/pacman.d
@@ -180,31 +177,39 @@ cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 # Chroot into new system to execute configuration
 arch-chroot /mnt /bin/bash -euo pipefail <<EOF
   # Set timezone
+  echo "Set timezone..."
   ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
   hwclock --systohc
   
   # Configure localization (add multiple languages via loop)
-  ${LOCALE_COMMANDS}
+  echo "Configure localization..."
+  locale-gen
+  echo "LANG=${DEFAULT_LOCALE}.UTF-8" > /etc/locale.conf
+  echo "LC_ALL=${DEFAULT_LOCALE}.UTF-8" >> /etc/locale.conf
 
   # Set hostname
+  echo "Set hostname..."
   echo "${HOSTNAME}" > /etc/hostname
   echo "127.0.0.1 localhost" >> /etc/hosts
   echo "::1       localhost" >> /etc/hosts
   echo "127.0.1.1 ${HOSTNAME}.localdomain ${HOSTNAME}" >> /etc/hosts
 
   # Set root password
+  echo "Set root password..."
   echo "root:${ROOT_PASSWORD}" | chpasswd
 
   # Create regular user and add to sudo group
+  echo " Create regular user and add to sudo group..."
   useradd -m -G wheel -s /bin/zsh ${USER_NAME} 
   echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd 
   echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
   # Install bootloader (GRUB)
+  echo "Install bootloader (GRUB)..."
   sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux
-  grub-mkconfig -o /boot/grub/grub.cfg 
-
+  grub-mkconfig -o /boot/grub/grub.cfg
+  
   # Enable necessary services
   systemctl enable NetworkManager
 EOF
