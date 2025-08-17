@@ -1,0 +1,83 @@
+{
+  "layer": "top",
+  "output": [
+    "*"
+  ],
+  "position": "top",
+  "mode": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "reload_style_on_change": true,
+  "include": [
+    //"$XDG_CONFIG_HOME/waybar/modules/clock.jsonc"
+    "modules/hyprland-workspace.jsonc",
+    // left
+    //center
+    "modules/clock.jsonc",
+    // right
+    "modules/idle_inhibitor.jsonc",
+    //
+    "modules/backlight.jsonc",
+    "modules/tray.jsonc",
+    "modules/network.jsonc",
+    "modules/bluetooth.jsonc",
+    "modules/battery.jsonc",
+    "modules/pulseaudio.jsonc",
+    "modules/power-profiles-daemon.jsonc",
+    "modules/memory.jsonc",
+    "modules/cpuinfo.jsonc",
+    "modules/gpuinfo.jsonc"
+  ],
+  // group per side
+  "modules-left": [
+    "group/leaf-inverse"
+  ],
+  "modules-center": [
+    "group/pill#1",
+    "group/pill-in#center",
+    "group/pill#2"
+  ],
+  "modules-right": [
+    "group/leaf"
+  ],
+  // declaring the groups
+  "group/leaf-inverse": {
+    "orientation": "inherit",
+    "modules": [
+      "hyprland/workspaces"
+    ]
+  },
+  "group/pill#1": {
+    "orientation": "inherit",
+    "modules": []
+  },
+  "group/pill-in#center": {
+    "orientation": "inherit",
+    "modules": [
+      "clock"
+    ]
+  },
+  "group/pill#2": {
+    "orientation": "inherit",
+    "modules": [
+      "idle_inhibitor"
+    ]
+  },
+  "group/leaf": {
+    "orientation": "inherit",
+    "modules": [
+      //"privacy",
+      "backlight",
+      "tray",
+      "network",
+      "bluetooth",
+      "pulseaudio",
+      //"battery",
+      "power-profiles-daemon",
+      "memory"
+      //"cpuinfo",
+      //"gpuinfo",
+      //"sensorsinfo"
+    ]
+  }
+}

@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# 获取脚本路径
+if [[ -z "${BASH_SOURCE[0]}" ]]; then
+  EXECUTABLE="${0}"
+else
+  EXECUTABLE="${BASH_SOURCE[0]}"
+fi
+
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+HYDE_DIR=$(dirname "$(which "${EXECUTABLE:-hyde-shell}")")
+HYDE_SCRIPTS_PATH="${HYDE_SCRIPTS_PATH:-${HYDE_DIR}/scripts}"
+PATH="$HYDE_SCRIPTS_PATH":$PATH
+
+python_initialized() {
+  python "${HYDE_SCRIPTS_PATH}/pyutils/pip_env.py" rebuild
+}
+python_activate() {
+  local python_env="${XDG_STATE_HOME:-$HOME/.local/state}/hyde/pip_env/bin/activate"
+  if [[ -r "$python_env" ]]; then
+    # shellcheck disable=SC1090
+    source "${python_env}"
+  else
+    python_initialized
+  fi
+}
+
+list_script() {
+  local HYDE_SCRIPTS_PATH="${HYDE_SCRIPTS_PATH:-${XDG_CONFIG_HOME:-$HOME/.config}/hyde/scripts:${HYDE_DIR}/scripts}"
+  IFS=':' read -ra RAW_DIRS <<<"$HYDE_SCRIPTS_PATH"
+  declare -A seen_dirs
+  local script_dirs=()
+  for dir in "${RAW_DIRS[@]}"; do
+    [[ -z "$dir" ]] && continue
+    [[ -n "${seen_dirs[$dir]}" ]] && continue
+    [[ -d "$dir" ]] && script_dirs+=("$dir")
+  done
+
+  for dir in "${script_dirs[@]}"; do
+    echo "Scripts in $dir:"
+    find "$dir" -maxdepth 1 -type f \( -name "*.sh" -o -name "*.py" -o -executable\) -exec basename {} \; 2>/dev/null | sort
+  done
+}
+
+run_command() {
+  # 按分号分割路径
+  IFS=':' read -ra RAW_DIRS <<<"$HYDE_SCRIPTS_PATH"
+  declare -A seen_dirs
+  script_dirs=()
+  for dir in "${RAW_DIRS[@]}"; do
+    # 空字符串
+    [[ -z "$dir" ]] && continue
+    # 非空
+    [[ -n "${seen_dirs[$dir]}" ]] && continue
+    seen_dirs["$dir"]=1
+    [[ -d "$dir" ]] && script_dirs+=("$dir")
+  done
+
+  for dir in "${script_dirs[@]}"; do
+    if [[ -f "$dir/${1}.sh" ]]; then
+      exec bash "$dir/${1}.sh" "${@:2}"
+    elif [[ -f "$dir/${1}.py" ]]; then
+      python_activate
+      exec python "$dir/${1}.py" "${@:2}"
+    elif [[ -f "$dir/${1}" && -x "$dir/${1}" ]]; then
+      exec "$dir/${1}" "${@:2}"
+    fi
+  done
+  # 尝试作为直接文件处理
+  if [[ -f "$1" && -x "$1" ]]; then
+    exec "$1" "${@:2}"
+  else
+    echo "Command not found: $1"
+    echo "Available commands:"
+    list_script
+  fi
+
+}
+
+if [[ "${1}" == "app" ]]; then
+  export PATH=${HYDE_SCRIPTS_PATH}:$PATH
+  [[ "${HYDEPY}" -eq 1 ]] && python_activate
+  shift
+  exec app2unit.sh "$@"
+fi
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  case $1 in
+  reload) ;;
+  wallbash) ;;
+  scripts) ;;
+  pyinit)
+    python_initialized
+    ;;
+  "") ;;
+  *) run_command "$@" ;;
+  esac
+  # error "Failed to parse '-s' argument"
+fi

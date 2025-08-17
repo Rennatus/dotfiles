@@ -1,0 +1,7 @@
+@import "styles/defaults.css";
+@import "theme.css";
+
+window#waybar {
+  background: @bar-gb;
+}
+

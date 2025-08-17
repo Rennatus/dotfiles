@@ -1,0 +1,15 @@
+# env
+python
+nvm
+stow
+# shell
+fzf  # fzf
+eza
+duf
+bat
+gitui
+neovim
+yazi
+# shell theme
+starship
+fastfetch

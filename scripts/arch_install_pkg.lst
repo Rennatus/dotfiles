@@ -1,0 +1,54 @@
+# env
+python
+nvm
+stow
+# shell
+fzf  # fzf
+eza
+duf
+bat
+gitui
+neovim
+yazi
+# shell theme
+starship
+fastfetch
+#----window manager
+hyprland
+sddm
+waybar
+rofi-wayland # application launcher
+hyprsunset
+hyprlock
+#-----wayland
+cliphist
+#-----theme config
+nwg-look    # gtk configuration tool
+qt5ct       # qt5 configuration tool
+qt6ct       # qt6 configuration tool
+kvantum     # svg based qt6 theme engine
+kvantum-qt5 # svg based qt5 theme engine
+qt5-wayland # wayland support in qt5
+qt6-wayland # wayland support in qt6
+#-----font
+ttf-maplemono
+ttf-maplemono-nf
+ttf-maplemono-nf-cn
+ttf-jetbrains-mono-nerd
+ttf-cascadia-code-nerd
+ttf-mononoki-nerd
+ttf-material-design-icons-git
+ttf-noto-sans-cjk-vf
+cantarell-fonts
+#------application
+kitty              # terminal
+librewolf          # browser GTK
+fcitx5
+fcitx5-configtool
+fcitx5-gtk
+fcitx5-qt
+fcitx5-rime
+# nvidia
+linux-headers
+nvidia-dkms
+nvidia-utils

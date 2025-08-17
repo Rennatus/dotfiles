@@ -1,0 +1,64 @@
+{
+  "network": {
+    "rotate": 0,
+    "tooltip": true,
+    "interval": 2,
+    "format-wifi": "\uf1eb",
+    "format-ethernet": "\udb80\ude00",
+    "format-linked": "\udb80\ude00 {ifname}(NO IP)",
+    "format-disconnected": "\udb81\uddaa",
+    "format-alt": "<span foreground='#99ffdd'>{bandwidthDownBytes}</span><span foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "tooltip-format": "Netword: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterfase: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+    "tooltop-format-disconnected": "Disconnected"
+  },
+  "network#bandwidth": {
+    "rotate": 0,
+    "interval": 2,
+    "tooltip": true,
+    "format-wifi": "<span size='xx-small' foreground='#99ffdd'>{bandwidthDownBytes}</span><span size='xx-small' foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "format-ethernet": "<span size='xx-small' foreground='#99ffdd'>{bandwidthDownBytes}</span><span size='xx-small' foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "format-linked": "  {ifname} (No IP)",
+    "format-disconnected": " ",
+    "format-alt": "Netword: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm} ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>\nDownload: <b>{bandwidthDownBytes}</b>\nUpload: <b>{bandwidthUpBytes}</b>",
+    "tooltop-format-disconnected": "Disconnected"
+  },
+  "network#bandwidth#upbytes": {
+    "rotate": 0,
+    "interval": 2,
+    "tooltip": true,
+    "class": "no-margin-pandding",
+    "format-wifi": "<span size='xx-small' foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "format-ethernet": "<span size='xx-small' foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "format-linked": " {ipname} (No IP)",
+    "format-disconnected": " ",
+    "format-alt": "<span size='xx-small' foreground='#ffcc66'>{bandwidthUpBytes}</span>",
+    "tooltip-format": "Netword: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm} ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>\nDownload: <b>{bandwidthDownBytes}</b>\nUpload: <b>{bandwidthUpBytes}</b>",
+    "tooltop-format-disconnected": "Disconnected"
+  },
+  "network#bandwidth#downbytes": {
+    "rotate": 0,
+    "interval": 2,
+    "tooltip": true,
+    "class": "no-margin-pandding",
+    "format-wifi": "<span size='xx-small' foreground='#99ffdd'>{bandwidthDownBytes}</span>",
+    "format-ethernet": "<span size='xx-small' foreground='#ffcc66'>{bandwidthDownBytes}</span>",
+    "format-linked": " {ipname} (No IP)",
+    "format-disconnected": " ",
+    "format-alt": "<span size='xx-small' foreground='#99ffdd'>{bandwidthDownBytes}</span>",
+    "tooltip-format": "Netword: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm} ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>\nDownload: <b>{bandwidthDownBytes}</b>\nUpload: <b>{bandwidthUpBytes}</b>",
+    "tooltop-format-disconnected": "Disconnected"
+  },
+  "network#bandwidth#totalbytes": {
+    "rotate": 0,
+    "interval": 2,
+    "tooltip": true,
+    "class": "no-margin-pandding",
+    "format-wifi": "<span size='xx-small' foreground='#99ffdd'>{bandwidthTotalBytes}</span>",
+    "format-ethernet": "<span size='xx-small' foreground='#99ffdd'>{bandwidthTotalBytes}</span>",
+    "format-linked": " {ipname} (No IP)",
+    "format-disconnected": " ",
+    "format-alt": "<span size='xx-small' foreground='#99ffdd'>{bandwidthTotalBytes}</span>",
+    "tooltip-format": "Netword: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm} ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>\nDownload: <b>{bandwidthDownBytes}</b>\nUpload: <b>{bandwidthUpBytes}</b>",
+    "tooltop-format-disconnected": "Disconnected"
+  }
+}
