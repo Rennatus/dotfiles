@@ -2,15 +2,19 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-readonly AUR_HELPER="yay"
-readonly CACHE_DIR=$HOME/.cache
-LOG_TIME="$(date +'%y%m%d_%Hh%Mm%Ss')"
 
+# 定义全局变量
+readonly XDG_CONFIG_HOME=$HOME/.config
+readonly XDG_CACHE_HOME=$HOME/.cache
+readonly XDG_DATA_HOME=$HOME/.local/share
+readonly XDG_DATA_HOME=$HOME/.local/state
+
+readonly AUR_HELPER="yay"
+LOG_TIME="$(date +'%y%m%d_%Hh%Mm%Ss')"
 # readonly src_dir="$(dirname "$(realpath "$0")")"
 # readonly conf_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
 # readonly cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/install_stow"
 # readonly log_time="$(date +'%y%m%d_%Hh%Mm%Ss')"
-#
 
 is_archlinux() {
   # 检查标志性文件 /etc/arch-release
@@ -47,6 +51,7 @@ pkg_installed() {
     return 1
   fi
 }
+
 pkg_available() {
   local pkg=$1
   if pacman -Si "${pkg}" &>/dev/null; then
@@ -55,6 +60,7 @@ pkg_available() {
     return 1
   fi
 }
+
 aur_available() {
   local pkg=$1
   # shellcheck disable=SC2154
@@ -83,6 +89,17 @@ nvidia_detect() {
   if [ "${1}" == "--driver" ]; then
     echo -e "nvidia-dkms\nnvidia-utils"
     return 0
+  fi
+}
+
+handle_legacy_service() {
+  local service="$1"
+  # Use the original logic for backward compatibility
+  if [[ $(systemctl list-units --all -t service --full --no-legend "${service}.service" | sed 's/^\s*//g' | cut -f1 -d' ') == "${service}.service" ]]; then
+    print_log -y "[skip] " -b "active " "Service ${service}"
+  else
+    print_log -y "enable " "Service ${service}"
+    sudo systemctl enable "${service}.service"
   fi
 }
 
@@ -160,14 +177,6 @@ print_log() {
     cat
   fi
 }
-#
-# handle_legacy_service() {
-#   local service="$1"
-#   # Use the original logic for backward compatibility
-#   if [[ $(systemctl list-units --all -t service --full --no-legend "${service}.service" | sed 's/^\s*//g' | cut -f1 -d' ') == "${service}.service" ]]; then
-#     print_log -y "[skip] " -b "active " "Service ${service}"
-#   else
-#     print_log -y "enable " "Service ${service}"
-#     sudo systemctl enable "${service}.service"
-#   fi
-# }
+
+
+

@@ -54,28 +54,20 @@ deploy_common_packages() {
   # safe_remove "$HOME/.config/git"
   # safe_stow "git"
 
-  # fastfetch
-  safe_remove "$HOME/.config/fastfetch"
-  safe_stow "fastfetch"
-
-  # startship
-  safe_remove "$HOME/.config/starship"
-  safe_stow "starship"
-
   # zsh
   safe_remove "$HOME/.config/zsh"
   safe_remove "$HOME/.zshenv"
   safe_remove "$HOME/.zshrc"
   safe_stow "zsh"
-
-  # kitty
-  safe_remove "$HOME/kitty"
-  safe_stow "kitty"
-
+  # fastfetch
+  safe_remove "$HOME/.config/fastfetch"
+  safe_stow "fastfetch"
+  # startship
+  safe_remove "$HOME/.config/starship"
+  safe_stow "starship"
   # Neovim configuration
   safe_remove "$HOME/.config/nvim"
   safe_stow "nvim"
-
   # yazi
   safe_remove "$HOME/.config/yazi"
   safe_stow "yazi"
@@ -89,26 +81,25 @@ deploy_common_packages() {
   # safe_stow "scripts"
 }
 deploy_arch_packages() {
-  # fcitx5
-  safe_remove "$HOME/.local/share/fcitx5"
-  safe_stow "fcitx5"
-  # waybar
-  safe_remove "$HOME/.config/waybar"
-  safe_stow "waybar"
   #xdg-terminal-exec
   safe_remove "$HOME/xdg-terminals.list"
   safe_stow "xdg-terminal-exec"
-  # gtk3.0
-  safe_remove "$HOME/.config/gtk-3.0"
-  safe_stow "gtk-3.0"
+
+  # kitty
+  safe_remove "$HOME/kitty"
+  safe_stow "kitty"
+
+  # fcitx5
+  safe_remove "$HOME/.local/share/fcitx5"
+  safe_stow "fcitx5"
+
+  # waybar
+  safe_remove "$HOME/.config/waybar"
+  safe_stow "waybar"
+
   # hypr
   safe_remove "$HOME/.config/hypr"
   safe_stow "hypr"
-  # hyde
-  safe_remove "$HOME/.config/hyde"
-  safe_stow "hyde"
-  print_log -g "[python env]" -b " :: " "Rebuilding HyDE Python environment..."
-  "${HOME}"/.config/hyde/hyde-shell pyinit
 }
 
 deploy_common_packages

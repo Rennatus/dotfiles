@@ -2,14 +2,14 @@
 python
 nvm
 stow
-# shell
-fzf  # fzf
+#shell tool
+fzf 
 eza
 duf
 bat
 gitui
 neovim
 yazi
-# shell theme
+#shell theme
 starship
 fastfetch

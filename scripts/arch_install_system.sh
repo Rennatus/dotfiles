@@ -149,7 +149,7 @@ echo "=== Installing system components ==="
 # Install base system packages (add/remove as needed)
 pacstrap -K /mnt \
   base base-devel linux linux-firmware \
-  alsa-firmware alsa-utils \
+  alsa-firmware alsa-utils sof-firmware\
   btrfs-progs \
   grub efibootmgr os-prober networkmanager \
   vim sudo zsh git

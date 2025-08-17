@@ -16,6 +16,7 @@ PATH="$HYDE_SCRIPTS_PATH":$PATH
 python_initialized() {
   python "${HYDE_SCRIPTS_PATH}/pyutils/pip_env.py" rebuild
 }
+
 python_activate() {
   local python_env="${XDG_STATE_HOME:-$HOME/.local/state}/hyde/pip_env/bin/activate"
   if [[ -r "$python_env" ]]; then

@@ -15,7 +15,7 @@ zinit snippet $ZDOTDIR/prompt.zsh
 
 # Enables quick directory jumping based on your usage history.
 # just like zoxide, but for zsh
-#zinit light rupa/z
+zinit light rupa/z
 
 # Lets you search your history for commands containing a substring, similar to Oh My Zsh.
 zinit light zsh-users/zsh-history-substring-search
@@ -31,3 +31,4 @@ zinit light Aloxaf/fzf-tab
 
 # Shows tips for using defined aliases when you type commands, helping you learn and use your aliases.
 zinit light djui/alias-tips
+
