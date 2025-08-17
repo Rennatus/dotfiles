@@ -1,22 +1,24 @@
 #---window manager
 hyprland
-waybar
-rofi-wayland # application launcher
+hyprpaper
 hyprlock
+hyprpicker
 cliphist
-#font
+swaync
+app2unit
+#--font
 ttf-maplemono
 ttf-maplemono-nf
 ttf-maplemono-nf-cn
 ttf-jetbrains-mono-nerd
 ttf-cascadia-code-nerd
 ttf-mononoki-nerd
-ttf-material-design-icons-git
 adobe-source-han-sans-cn-fonts
 adobe-source-han-serif-cn-fonts
-ttf-noto-sans-cjk-vf
-cantarell-fonts
-#application
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+#--application
 kitty              # terminal
 librewolf          # browser GTK
 fcitx5
@@ -25,10 +27,15 @@ fcitx5-gtk
 fcitx5-qt
 fcitx5-rime
 #--theme config
-#nwg-look    # gtk configuration tool
-#qt5ct       # qt5 configuration tool
-#qt6ct       # qt6 configuration tool
+nwg-look    # gtk configuration tool
+qt5ct       # qt5 configuration tool
+qt6ct       # qt6 configuration tool
+qt5-wayland # wayland support in qt5
+qt6-wayland # wayland support in qt6
 #kvantum     # svg based qt6 theme engine
 #kvantum-qt5 # svg based qt5 theme engine
-#qt5-wayland # wayland support in qt5
-#qt6-wayland # wayland support in qt6
+pavucontrol
+waybar
+rofi-wayland
+matugen-bin
+flatpak

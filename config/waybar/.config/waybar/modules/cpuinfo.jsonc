@@ -1,8 +1,0 @@
-{
-  "cpu": {
-    "rotate": 0,
-    "interval": 5,
-    "format": " {usage}% ",
-    "max-length": 16
-  }
-}

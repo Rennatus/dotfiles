@@ -3,18 +3,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# 定义全局变量
-readonly XDG_CONFIG_HOME=$HOME/.config
-readonly XDG_CACHE_HOME=$HOME/.cache
-readonly XDG_DATA_HOME=$HOME/.local/share
-readonly XDG_DATA_HOME=$HOME/.local/state
 
-readonly AUR_HELPER="yay"
 LOG_TIME="$(date +'%y%m%d_%Hh%Mm%Ss')"
-# readonly src_dir="$(dirname "$(realpath "$0")")"
-# readonly conf_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
-# readonly cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/install_stow"
-# readonly log_time="$(date +'%y%m%d_%Hh%Mm%Ss')"
 
 is_archlinux() {
   # 检查标志性文件 /etc/arch-release
@@ -43,54 +33,7 @@ is_macos() {
   return 1
 }
 
-pkg_installed() {
-  local pkg=$1
-  if pacman -Q "${pkg}" &>/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
 
-pkg_available() {
-  local pkg=$1
-  if pacman -Si "${pkg}" &>/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
-
-aur_available() {
-  local pkg=$1
-  # shellcheck disable=SC2154
-  if ${AUR_HELPER} -Si "${pkg}" &>/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
-
-nvidia_detect() {
-  readarray -t dGPU < <(lspci -k | grep -E "(VGA|3D)" | awk -F ': ' '{print $NF}')
-  if [ $# -eq 0 ]; then
-    if grep -iq nvidia <<<"${dGPU[@]}"; then
-      return 0
-    else
-      return 1
-    fi
-  fi
-  if [ "${1}" == '--verbose' ]; then
-    for indx in "${!dGPU[@]}"; do
-      echo -e "\033[0;32m [gpu$indx] \033[0m detected :: ${dGPU[indx]}"
-    done
-    return 0
-  fi
-  if [ "${1}" == "--driver" ]; then
-    echo -e "nvidia-dkms\nnvidia-utils"
-    return 0
-  fi
-}
 
 handle_legacy_service() {
   local service="$1"
@@ -105,7 +48,7 @@ handle_legacy_service() {
 
 print_log() {
   local executable="${0##*/}"
-  local log_file="${CACHE_DIR}/logs/${LOG_TIME}/${executable}"
+  local log_file="${XDG_CACHE_HOME}/logs/${LOG_TIME}/${executable}"
   mkdir -p "$(dirname "${log_file}")"
   local section=${log_section:-}
   {
@@ -177,6 +120,5 @@ print_log() {
     cat
   fi
 }
-
 
 
