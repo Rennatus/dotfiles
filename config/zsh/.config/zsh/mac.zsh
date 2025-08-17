@@ -1,17 +1,11 @@
-
-
-
-
-
+#!/usr/bin/env zsh
 
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 #export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 #export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 #export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-
 export CC=clang
 export CXX=clang++
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
