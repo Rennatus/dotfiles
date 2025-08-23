@@ -18,10 +18,8 @@ noto-fonts
 #--application
 kitty              # terminal
 librewolf          # browser GTK
-fcitx5
-fcitx5-configtool
-fcitx5-gtk
-fcitx5-qt
+vscodium
+fcitx5-im
 fcitx5-rime
 #--theme config
 nwg-look    # gtk configuration tool

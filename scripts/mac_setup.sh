@@ -8,7 +8,6 @@ readonly stow_dir="$ROOT_DIR/config"
 readonly stow_target="$HOME"
 
 TIME="$(date +'%y%m%d_%Hh%Mm%Ss')"
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
 print_log() {
   local executable="${0##*/}"

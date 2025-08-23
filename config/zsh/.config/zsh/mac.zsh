@@ -17,7 +17,6 @@ export NVM_DIR="$HOME/.nvm"
 # nvm use --lts
 # corepack envble pnpm
 
-
 # export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 # #export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 # #export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"

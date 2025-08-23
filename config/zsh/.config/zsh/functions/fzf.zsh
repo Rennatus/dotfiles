@@ -105,8 +105,6 @@ _fuzzy_search_cmd_history() {
   return $ret
 }
 
-
-
 alias ffec='_fuzzy_edit_search_file_content' \
     ffcd='_fuzzy_change_directory' \
     ffe='_fuzzy_edit_search_file' \

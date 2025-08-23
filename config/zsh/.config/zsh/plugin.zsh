@@ -7,6 +7,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
+zinit light zsh-users/zsh-history-substring-search
 zinit light zsh-users/zsh-completions
 
 # Loads a collection of handy Zsh functions from a Gist.
@@ -14,10 +15,7 @@ zinit light zsh-users/zsh-completions
 
 # Enables quick directory jumping based on your usage history.
 # just like zoxide, but for zsh
-zinit light rupa/z
-
-# Lets you search your history for commands containing a substring, similar to Oh My Zsh.
-zinit light zsh-users/zsh-history-substring-search
+#zinit light rupa/z
 
 # Loads useful git aliases and functions from Oh My Zsh's git plugin.
 # zinit snippet https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
@@ -29,5 +27,5 @@ zinit light zsh-users/zsh-history-substring-search
 zinit light Aloxaf/fzf-tab
 
 # Shows tips for using defined aliases when you type commands, helping you learn and use your aliases.
-#zinit light djui/alias-tips
+zinit light djui/alias-tips
 
