@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # best fzf aliases ever
 _fuzzy_change_directory() {
     local initial_query="$1"

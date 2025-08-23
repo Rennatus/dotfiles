@@ -25,28 +25,23 @@ is_macos() {
     return 1
 }
 
-if is_archlinux;then
-    # XDG Base Directory
-    XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-    XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-    XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-    XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-    XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-    XDG_CONFIG_DIRS="${XDG_DATA_DIRS:-/etc/xdg}"
-    [ -f ${ZDOTDIR}/linux/linux.zsh ] &&source ${ZDOTDIR}/linux/linux.zsh
+if is_archlinux;then 
+  # XDG Base Directory
+  export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+  export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+  export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+  export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+  export XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  export XDG_CONFIG_DIRS="${XDG_DATA_DIRS:-/etc/xdg}"
+  [ -f ${ZDOTDIR}/linux.zsh ] && source ${ZDOTDIR}/linux.zsh
 fi
 
 if is_macos;then
-
+    [ -f ${ZDOTDIR}/mac.zsh ] && source ${ZDOTDIR}/mac.zsh
 fi
-
 # 检查当前 Shell 是否为交互式（interactive）
 if [[ $- == *i* ]] && [ -f "$ZDOTDIR/terminal.zsh" ]; then
     . "$ZDOTDIR/terminal.zsh" || echo "Error: Could not source $ZDOTDIR/terminal.zsh"
 fi
-
-
-
-
 
 

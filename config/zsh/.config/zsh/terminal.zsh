@@ -14,7 +14,6 @@ function _load_compinit() {
     fi
     _comp_options+=(globdots) # tab complete hidden files
 }
-
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 HISTFILE=${HISTFILE:-${ZDOTDIR}/.zsh_history}
 HISTSIZE=10000
@@ -41,7 +40,5 @@ function _load_prompt(){
 
 _load_compinit
 _load_plugin
-_load_prompt
 _load_functions
 _load_completions
-

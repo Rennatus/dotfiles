@@ -1,0 +1,35 @@
+# dev
+git
+python
+nvm
+rustup
+llvm
+#shell tool
+stow
+fzf 
+eza
+duf
+bat
+gitui
+neovim
+yazi
+wget
+ouch
+#shell theme
+starship
+fastfetch
+#application
+kitty
+pearcleaner
+librewolf
+vscodium
+docker-desktop
+#font
+font-jetbrains-mono-nerd-font
+font-jetbrains-maple-mono-nf
+font-maple-mono-nf
+font-maple-mono-nf-cn
+font-noto-sans-cjk
+font-noto-serif-cjk
+font-noto-color-emoji
+

@@ -11,13 +11,10 @@ ttf-maplemono
 ttf-maplemono-nf
 ttf-maplemono-nf-cn
 ttf-jetbrains-mono-nerd
-ttf-cascadia-code-nerd
 ttf-mononoki-nerd
 adobe-source-han-sans-cn-fonts
 adobe-source-han-serif-cn-fonts
 noto-fonts
-noto-fonts-cjk
-noto-fonts-emoji
 #--application
 kitty              # terminal
 librewolf          # browser GTK

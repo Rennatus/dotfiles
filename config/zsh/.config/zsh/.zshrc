@@ -1,7 +1,10 @@
 #!/usr/bin/env zsh
-source "$ZDOTDIR/utils.zsh"
-if is_archlinux; then
-    [ -f "$ZDOTDIR/linux/linux.zsh" ] && source  "$ZDOTDIR/linux/linux.zsh"
-elif is_macos;then
-    [ -f "$ZDOTDIR/mac/mac.zsh" ] && source "$ZDOTDIR/mac/mac.zsh"
+
+if command -v starship &>/dev/null; then
+    # ===== START Initialize Starship prompt =====
+    eval "$(starship init zsh)"
+    export STARSHIP_CACHE=${XDG_CACHE_HOME:-$HOME/.cache}/starship
+    export STARSHIP_CONFIG=${XDG_CONFIG_HOME:-$HOME/.config}/starship/starship.toml
+# ===== END Initialize Starship prompt =====
 fi
+

@@ -34,7 +34,6 @@ is_macos() {
 }
 
 
-
 handle_legacy_service() {
   local service="$1"
   # Use the original logic for backward compatibility
@@ -48,7 +47,7 @@ handle_legacy_service() {
 
 print_log() {
   local executable="${0##*/}"
-  local log_file="${XDG_CACHE_HOME}/logs/${LOG_TIME}/${executable}"
+  local log_file="${XDG_CACHE_HOME:-$HOME/.cache}/logs/${LOG_TIME}/${executable}"
   mkdir -p "$(dirname "${log_file}")"
   local section=${log_section:-}
   {

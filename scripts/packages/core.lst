@@ -1,8 +1,11 @@
-# env
+# dev
+git
 python
 nvm
-stow
+rustup
+llvm
 #shell tool
+stow
 fzf 
 eza
 duf
@@ -11,6 +14,7 @@ gitui
 neovim
 yazi
 wget
+ouch
 #shell theme
 starship
 fastfetch

@@ -8,7 +8,6 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit snippet $ZDOTDIR/prompt.zsh
 
 # Loads a collection of handy Zsh functions from a Gist.
 # zinit snippet https://gist.githubusercontent.com/hightemp/5071909/raw/
@@ -30,5 +29,5 @@ zinit light zsh-users/zsh-history-substring-search
 zinit light Aloxaf/fzf-tab
 
 # Shows tips for using defined aliases when you type commands, helping you learn and use your aliases.
-zinit light djui/alias-tips
+#zinit light djui/alias-tips
 
