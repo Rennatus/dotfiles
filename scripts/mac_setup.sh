@@ -148,7 +148,6 @@ deploy_config() {
 
   # zsh
   safe_remove "$HOME/.config/zsh"
-  safe_remove "$HOME/.zshenv"
   safe_remove "$HOME/.zshrc"
   safe_stow "zsh"
 
